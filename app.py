@@ -23,12 +23,13 @@ def add_task():
         # Create a new task with a simple ID
         task_id = len(tasks) + 1
         new_task = {
-            'id': task_id,
-            'title': title,
-            'due_date': due_date if due_date else 'No due date',
-            'completed': False,
-            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
+    'id': task_id,
+    'title': title,
+    'due_date': due_date if due_date else 'No due date',
+    'category': request.form.get('category') or 'General',  # Add category field
+    'completed': False,
+    'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+}
         tasks.append(new_task)
     
     return redirect(url_for('index'))
