@@ -125,17 +125,23 @@
             
             {% if today_tasks %}
                 {% for task in today_tasks %}
-                    <div class="task {% if task.completed %}completed{% endif %}">
-                        <div class="task-title">{{ task.title }}</div>
-                        <div class="task-info">
-                            <span class="due-date">{{ task.due_date }}</span>
-                            <span class="category">{{ task.category }}</span>
-                        </div>
-                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
-                            <button class="complete-btn" type="submit">
-                                {% if task.completed %}Undo{% else %}Complete{% endif %}
-                            </button>
-                        </form>
+                   <div class="task {% if task.completed %}completed{% endif %}">
+    <label class="task-checkbox">
+        <input type="checkbox" {% if task.completed %}checked{% endif %} 
+               onchange="document.getElementById('complete-form-{{ task.id }}').submit();">
+        <span class="checkmark"></span>
+    </label>
+    <div class="task-title">{{ task.title }}</div>
+    <div class="task-info">
+        <span class="due-date">{{ task.due_date }}</span>
+        <span class="category">{{ task.category }}</span>
+    </div>
+    <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;">
+    </form>
+    <form action="/delete/{{ task.id }}" method="post">
+        <button class="delete-btn" type="submit">Delete</button>
+    </form>
+</div>
                         <form action="/delete/{{ task.id }}" method="post">
                             <button class="delete-btn" type="submit">Delete</button>
                         </form>
@@ -161,20 +167,23 @@
             
             {% if tomorrow_tasks %}
                 {% for task in tomorrow_tasks %}
-                    <div class="task {% if task.completed %}completed{% endif %}">
-                        <div class="task-title">{{ task.title }}</div>
-                        <div class="task-info">
-                            <span class="due-date">{{ task.due_date }}</span>
-                            <span class="category">{{ task.category }}</span>
-                        </div>
-                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
-                            <button class="complete-btn" type="submit">
-                                {% if task.completed %}Undo{% else %}Complete{% endif %}
-                            </button>
-                        </form>
-                        <form action="/delete/{{ task.id }}" method="post">
-                            <button class="delete-btn" type="submit">Delete</button>
-                        </form>
+                   <div class="task {% if task.completed %}completed{% endif %}">
+    <label class="task-checkbox">
+        <input type="checkbox" {% if task.completed %}checked{% endif %} 
+               onchange="document.getElementById('complete-form-{{ task.id }}').submit();">
+        <span class="checkmark"></span>
+    </label>
+    <div class="task-title">{{ task.title }}</div>
+    <div class="task-info">
+        <span class="due-date">{{ task.due_date }}</span>
+        <span class="category">{{ task.category }}</span>
+    </div>
+    <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;">
+    </form>
+    <form action="/delete/{{ task.id }}" method="post">
+        <button class="delete-btn" type="submit">Delete</button>
+    </form>
+</div>
                     </div>
                 {% endfor %}
             {% else %}
@@ -197,21 +206,23 @@
             
             {% if next_week_tasks %}
                 {% for task in next_week_tasks %}
-                    <div class="task {% if task.completed %}completed{% endif %}">
-                        <div class="task-title">{{ task.title }}</div>
-                        <div class="task-info">
-                            <span class="due-date">{{ task.due_date }}</span>
-                            <span class="category">{{ task.category }}</span>
-                        </div>
-                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
-                            <button class="complete-btn" type="submit">
-                                {% if task.completed %}Undo{% else %}Complete{% endif %}
-                            </button>
-                        </form>
-                        <form action="/delete/{{ task.id }}" method="post">
-                            <button class="delete-btn" type="submit">Delete</button>
-                        </form>
-                    </div>
+                   <div class="task {% if task.completed %}completed{% endif %}">
+    <label class="task-checkbox">
+        <input type="checkbox" {% if task.completed %}checked{% endif %} 
+               onchange="document.getElementById('complete-form-{{ task.id }}').submit();">
+        <span class="checkmark"></span>
+    </label>
+    <div class="task-title">{{ task.title }}</div>
+    <div class="task-info">
+        <span class="due-date">{{ task.due_date }}</span>
+        <span class="category">{{ task.category }}</span>
+    </div>
+    <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;">
+    </form>
+    <form action="/delete/{{ task.id }}" method="post">
+        <button class="delete-btn" type="submit">Delete</button>
+    </form>
+</div>
                 {% endfor %}
             {% else %}
                 <p>No tasks due next week.</p>
@@ -230,21 +241,23 @@
             
             {% if other_tasks %}
                 {% for task in other_tasks %}
-                    <div class="task {% if task.completed %}completed{% endif %}">
-                        <div class="task-title">{{ task.title }}</div>
-                        <div class="task-info">
-                            <span class="due-date">{{ task.due_date }}</span>
-                            <span class="category">{{ task.category }}</span>
-                        </div>
-                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
-                            <button class="complete-btn" type="submit">
-                                {% if task.completed %}Undo{% else %}Complete{% endif %}
-                            </button>
-                        </form>
-                        <form action="/delete/{{ task.id }}" method="post">
-                            <button class="delete-btn" type="submit">Delete</button>
-                        </form>
-                    </div>
+                   <div class="task {% if task.completed %}completed{% endif %}">
+    <label class="task-checkbox">
+        <input type="checkbox" {% if task.completed %}checked{% endif %} 
+               onchange="document.getElementById('complete-form-{{ task.id }}').submit();">
+        <span class="checkmark"></span>
+    </label>
+    <div class="task-title">{{ task.title }}</div>
+    <div class="task-info">
+        <span class="due-date">{{ task.due_date }}</span>
+        <span class="category">{{ task.category }}</span>
+    </div>
+    <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;">
+    </form>
+    <form action="/delete/{{ task.id }}" method="post">
+        <button class="delete-btn" type="submit">Delete</button>
+    </form>
+</div>
                 {% endfor %}
             {% else %}
                 <p>No other tasks.</p>
