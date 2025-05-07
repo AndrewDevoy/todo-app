@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, render_template, redirect, url_for
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Create a simple Flask app
 app = Flask(__name__)
@@ -10,8 +10,22 @@ tasks = []
 
 @app.route('/')
 def index():
-    """Render the main to-do list page"""
-    return render_template('index.html', tasks=tasks)
+    """Render the main to-do list page with date-based sections"""
+    # Calculate dates for filtering
+    today = datetime.now().date()
+    today_str = today.strftime('%Y-%m-%d')
+    tomorrow = today + timedelta(days=1)
+    tomorrow_str = tomorrow.strftime('%Y-%m-%d')
+    next_week = today + timedelta(days=7)
+    next_week_str = next_week.strftime('%Y-%m-%d')
+    
+    return render_template(
+        'index.html', 
+        tasks=tasks,
+        today_date=today_str,
+        tomorrow_date=tomorrow_str,
+        next_week_date=next_week_str
+    )
 
 @app.route('/add', methods=['POST'])
 def add_task():
@@ -23,13 +37,13 @@ def add_task():
         # Create a new task with a simple ID
         task_id = len(tasks) + 1
         new_task = {
-    'id': task_id,
-    'title': title,
-    'due_date': due_date if due_date else 'No due date',
-    'category': request.form.get('category') or 'General',  # Add category field
-    'completed': False,
-    'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-}
+            'id': task_id,
+            'title': title,
+            'due_date': due_date if due_date else 'No due date',
+            'category': request.form.get('category') or 'General',  # Add category field
+            'completed': False,
+            'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
         tasks.append(new_task)
     
     return redirect(url_for('index'))
