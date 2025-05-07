@@ -13,11 +13,11 @@ def index():
     """Render the main to-do list page with date-based sections"""
     # Calculate dates for filtering
     today = datetime.now().date()
-    today_str = today.strftime('%Y-%m-%d')
+    today_str = today.strftime('%d-%m-%Y')
     tomorrow = today + timedelta(days=1)
-    tomorrow_str = tomorrow.strftime('%Y-%m-%d')
+    tomorrow_str = tomorrow.strftime('%d-%m-%Y')
     next_week = today + timedelta(days=7)
-    next_week_str = next_week.strftime('%Y-%m-%d')
+    next_week_str = next_week.strftime('%d-%m-%Y')
     
     return render_template(
         'index.html', 
@@ -39,7 +39,7 @@ def add_task():
         new_task = {
             'id': task_id,
             'title': title,
-            'due_date': due_date if due_date else 'No due date',
+            'due_date': datetime.strptime(due_date, '%Y-%m-%d').strftime('%d-%m-%Y') if due_date else 'No due date',
             'category': request.form.get('category') or 'General',  # Add category field
             'completed': False,
             'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
