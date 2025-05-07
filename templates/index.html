@@ -295,7 +295,6 @@
     </form>
     <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;"></form>
 </div>
-                    </div>
                 {% endfor %}
             {% else %}
                 <p>No tasks due tomorrow.</p>
@@ -389,8 +388,7 @@
     </form>
     <form id="complete-form-{{ task.id }}" action="/complete/{{ task.id }}" method="post" style="display:none;"></form>
 </div>
-    </form>
-</div>
+            
                 {% endfor %}
             {% else %}
                 <p>No other tasks.</p>
