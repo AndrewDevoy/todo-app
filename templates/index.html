@@ -10,8 +10,13 @@
             margin: 0 auto;
             padding: 20px;
         }
-        h1 {
+        h1, h2 {
             color: #333;
+        }
+        .task-section {
+            margin-bottom: 30px;
+            border-left: 4px solid #4CAF50;
+            padding-left: 15px;
         }
         .task {
             border-bottom: 1px solid #eee;
@@ -30,19 +35,39 @@
             text-decoration: line-through;
             color: #888;
         }
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+            min-width: 120px;
+        }
         .due-date {
             color: #666;
             font-size: 0.8em;
-            margin-right: 10px;
+        }
+        .category {
+            color: #555;
+            font-size: 0.8em;
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 3px;
         }
         .task-form {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .task-input {
             flex-grow: 1;
             padding: 8px;
+            min-width: 200px;
+        }
+        .category-select {
+            padding: 8px;
+            min-width: 150px;
         }
         button {
             background-color: #4CAF50;
@@ -57,6 +82,14 @@
         .complete-btn {
             background-color: #2196F3;
         }
+        @media (max-width: 600px) {
+            .task-form {
+                flex-direction: column;
+            }
+            .task-input, .category-select {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -65,24 +98,158 @@
     <form class="task-form" action="/add" method="post">
         <input class="task-input" type="text" name="title" placeholder="Enter a new task" required>
         <input class="task-input" type="date" name="due_date">
+        <select class="category-select" name="category">
+            <option value="General">General</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Health">Health</option>
+            <option value="Finance">Finance</option>
+        </select>
         <button type="submit">Add Task</button>
     </form>
     
     {% if tasks %}
-        {% for task in tasks %}
-            <div class="task {% if task.completed %}completed{% endif %}">
-                <div class="task-title">{{ task.title }}</div>
-                <div class="due-date">{{ task.due_date }}</div>
-                <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
-                    <button class="complete-btn" type="submit">
-                        {% if task.completed %}Undo{% else %}Complete{% endif %}
-                    </button>
-                </form>
-                <form action="/delete/{{ task.id }}" method="post">
-                    <button class="delete-btn" type="submit">Delete</button>
-                </form>
-            </div>
-        {% endfor %}
+        <!-- Today's Tasks -->
+        <div class="task-section">
+            <h2>Today</h2>
+            {% set today_tasks = [] %}
+            {% for task in tasks %}
+                {% if task.due_date and task.due_date != 'No due date' %}
+                    {% set task_date = task.due_date %}
+                    {% if task_date == today_date %}
+                        {% set _ = today_tasks.append(task) %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if today_tasks %}
+                {% for task in today_tasks %}
+                    <div class="task {% if task.completed %}completed{% endif %}">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="task-info">
+                            <span class="due-date">{{ task.due_date }}</span>
+                            <span class="category">{{ task.category }}</span>
+                        </div>
+                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
+                            <button class="complete-btn" type="submit">
+                                {% if task.completed %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                        <form action="/delete/{{ task.id }}" method="post">
+                            <button class="delete-btn" type="submit">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No tasks due today.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Tomorrow's Tasks -->
+        <div class="task-section">
+            <h2>Tomorrow</h2>
+            {% set tomorrow_tasks = [] %}
+            {% for task in tasks %}
+                {% if task.due_date and task.due_date != 'No due date' %}
+                    {% set task_date = task.due_date %}
+                    {% if task_date == tomorrow_date %}
+                        {% set _ = tomorrow_tasks.append(task) %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if tomorrow_tasks %}
+                {% for task in tomorrow_tasks %}
+                    <div class="task {% if task.completed %}completed{% endif %}">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="task-info">
+                            <span class="due-date">{{ task.due_date }}</span>
+                            <span class="category">{{ task.category }}</span>
+                        </div>
+                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
+                            <button class="complete-btn" type="submit">
+                                {% if task.completed %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                        <form action="/delete/{{ task.id }}" method="post">
+                            <button class="delete-btn" type="submit">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No tasks due tomorrow.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Next Week's Tasks -->
+        <div class="task-section">
+            <h2>Next Week</h2>
+            {% set next_week_tasks = [] %}
+            {% for task in tasks %}
+                {% if task.due_date and task.due_date != 'No due date' %}
+                    {% set task_date = task.due_date %}
+                    {% if task_date > tomorrow_date and task_date <= next_week_date %}
+                        {% set _ = next_week_tasks.append(task) %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if next_week_tasks %}
+                {% for task in next_week_tasks %}
+                    <div class="task {% if task.completed %}completed{% endif %}">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="task-info">
+                            <span class="due-date">{{ task.due_date }}</span>
+                            <span class="category">{{ task.category }}</span>
+                        </div>
+                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
+                            <button class="complete-btn" type="submit">
+                                {% if task.completed %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                        <form action="/delete/{{ task.id }}" method="post">
+                            <button class="delete-btn" type="submit">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No tasks due next week.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Other Tasks -->
+        <div class="task-section">
+            <h2>Other Tasks</h2>
+            {% set other_tasks = [] %}
+            {% for task in tasks %}
+                {% if not task.due_date or task.due_date == 'No due date' or task.due_date > next_week_date %}
+                    {% set _ = other_tasks.append(task) %}
+                {% endif %}
+            {% endfor %}
+            
+            {% if other_tasks %}
+                {% for task in other_tasks %}
+                    <div class="task {% if task.completed %}completed{% endif %}">
+                        <div class="task-title">{{ task.title }}</div>
+                        <div class="task-info">
+                            <span class="due-date">{{ task.due_date }}</span>
+                            <span class="category">{{ task.category }}</span>
+                        </div>
+                        <form action="/complete/{{ task.id }}" method="post" style="margin-right: 5px;">
+                            <button class="complete-btn" type="submit">
+                                {% if task.completed %}Undo{% else %}Complete{% endif %}
+                            </button>
+                        </form>
+                        <form action="/delete/{{ task.id }}" method="post">
+                            <button class="delete-btn" type="submit">Delete</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No other tasks.</p>
+            {% endif %}
+        </div>
     {% else %}
         <p>No tasks yet! Add a task to get started.</p>
     {% endif %}
